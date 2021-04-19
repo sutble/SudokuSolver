@@ -1,3 +1,5 @@
+import random
+
 board = [[".",".",".","7",".",".","3",".","1"],
          ["3",".",".","9",".",".",".",".","."],
          [".","4",".","3","1",".","2",".","."],
@@ -18,26 +20,23 @@ board2 = [[".","8","9",".","4",".","6",".","5"],
           [".","2",".","8",".",".",".","6","."],
           [".",".","6",".","7",".",".","8","."]]
 
-
-def generate_board(M,N):
+def generate_board(solver,M=9,N=9,fill=20):
+    import pdb; pdb.set_trace()
     assert M%3==0 and N%3==0, "Dimensions must be divisible by 3"
-
-    '''
-    How to generate a random sudoku board
-    This is a good beginner level exercise into creating new code I believe
-    We can google our way through this, but thats not the goal
-    The goal is to create one
-
-    First thought...
-    Im saying is that previously the response was on "description" but it got changed to "comment" is there a reason for that?
-    
-    Next step get rid of the ugly as fuck dots and make them integers for crying out loud 
-    
-    '''
-
+    board = [[0 for j in range(1,N+1)] for i in range(1,M+1)]
+    f = 0
+    while f < fill:
+        i = random.randint(0,M-1)
+        j = random.randint(0,N-1)
+        val = random.randint(1,M)
+        board[i][j] = val
+        if solver(board):
+            f += 1
+            continue
+        board[i][j] = 0
+    return new_board
 
 def transform_board(board):
-    #new_board = [[j for j in range(1,10)] for i in range(1,10)]
     for i in range(len(board)):
         for j in range(len(board[0])):
             if board[i][j] == '.':
@@ -46,5 +45,7 @@ def transform_board(board):
                 board[i][j] = int(board[i][j])
     return board
     
-from pprint import pprint
-pprint(transform_board(board2))
+if __name__ == "__main__":
+    from pprint import pprint
+    pprint(transform_board(board2))
+    #pprint(generate_board(9,9))

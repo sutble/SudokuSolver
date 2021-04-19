@@ -1,24 +1,26 @@
-board =[[0, 0, 0, 7, 0, 0, 3, 0, 1],
-        [3, 0, 0, 9, 0, 0, 0, 0, 0],
-        [0, 4, 0, 3, 1, 0, 2, 0, 0],
-        [0, 6, 0, 4, 0, 0, 5, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 1, 0, 0, 8, 0, 4, 0],
-        [0, 0, 6, 0, 2, 1, 0, 5, 0],
-        [0, 0, 0, 0, 0, 9, 0, 0, 8],
-        [8, 0, 5, 0, 0, 4, 0, 0, 0]]
+from board_generator import transform_board,generate_board
+from pprint import pprint
+print = pprint
 
+board = [[".",".",".","7",".",".","3",".","1"],
+         ["3",".",".","9",".",".",".",".","."],
+         [".","4",".","3","1",".","2",".","."],
+         [".","6",".","4",".",".","5",".","."],
+         [".",".",".",".",".",".",".",".","."],
+         [".",".","1",".",".","8",".","4","."],
+         [".",".","6",".","2","1",".","5","."],
+         [".",".",".",".",".","9",".",".","8"],
+         ["8",".","5",".",".","4",".",".","."]]
 
-board2=[[0, 8, 9, 0, 4, 0, 6, 0, 5],
-        [0, 7, 0, 0, 0, 8, 0, 4, 1],
-        [5, 6, 0, 9, 0, 0, 0, 0, 8],
-        [0, 0, 0, 7, 0, 5, 0, 9, 0],
-        [0, 9, 0, 4, 0, 1, 0, 5, 0],
-        [0, 3, 0, 9, 0, 6, 0, 1, 0],
-        [8, 0, 0, 0, 0, 0, 0, 0, 7],
-        [0, 2, 0, 8, 0, 0, 0, 6, 0],
-        [0, 0, 6, 0, 7, 0, 0, 8, 0]]
-
+board2=[[0, 0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0, 4], 
+        [0, 0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 3, 0, 0, 1, 0],
+        [0, 0, 0, 3, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0, 0], 
+        [0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
 class SudokuSolver:
 
@@ -56,11 +58,16 @@ class SudokuSolver:
     def next(self,i,j):
         return (i,j+1) if j < self.N-1 else (i+1,0)
 
-    def solve(self,board):
-        self.board = board
+    def solve(self,board,just_check=False):
+        self.f = open('log.txt', "w")
+        self.original_board = board
+        self.board = [[j for j in row] for row in board]
+        self.just_check = just_check
         self.M = len(board)
         self.N = len(board[0])
-        return self._solver(0,0)
+        result = self._solver(0,0)
+        self.f.close()
+        return self.board if result else None
     
     def _solver(self,i,j):
             if(i == self.M-1 and j == self.N-1):
@@ -87,11 +94,17 @@ class SudokuSolver:
             if finished:
                 return True
             else:
+                for row in self.board:
+                    self.f.write(f'{row}\n')
+                self.f.write(f'\n\n\n\n')
                 self.board[i][j] = 0
                 return False
-        
-print(SudokuSolver().solve(board2))
-print(board2)
+
+if __name__ == "__main__":
+    import pdb; pdb.set_trace()
+    #print(SudokuSolver().solve(transform_board(board)))
+    print(SudokuSolver().solve(board2))
+    generate_board(SudokuSolver().solve)
 
 
     
